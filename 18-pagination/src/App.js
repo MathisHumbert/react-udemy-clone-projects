@@ -9,7 +9,7 @@ function App() {
   useEffect(() => {
     if (loading) return;
     setFollowers(data[page]);
-  }, [loading]);
+  }, [loading, page]);
 
   const prevClick = () => {
     setPage((oldValue) => {
@@ -39,22 +39,28 @@ function App() {
           })}
         </div>
         <div className="btn-container">
-          <button className="prev" onClick={prevClick}>
-            prev
-          </button>
+          {loading ? null : (
+            <button className="prev-btn" onClick={prevClick}>
+              prev
+            </button>
+          )}
           {data.map((item, index) => {
+            console.log(index, page);
             return (
               <button
-                className={`page-btn ${index === page ? 'active' : null}`}
+                className={`page-btn ${index === page ? 'active-btn' : null}`}
                 onClick={() => setPage(index)}
+                key={index}
               >
                 {index + 1}
               </button>
             );
           })}
-          <button className="next" onClick={nextClick}>
-            next
-          </button>
+          {!loading && (
+            <button className="next-btn" onClick={nextClick}>
+              next
+            </button>
+          )}
         </div>
       </section>
     </main>
