@@ -1,32 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { API_ENDPOINT } from './context';
+import useFetch from './useFetch';
 
-// &i=${id}
 const SingleMovie = () => {
-  const [loading, setLoading] = useState(true);
-  const [movie, setMovie] = useState([]);
-
   const { id } = useParams();
 
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch(`${API_ENDPOINT}&i=${id}`);
-      const data = await response.json();
-      setMovie(data);
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-      setLoading(false);
-    }
-  };
+  const { loading, data: movie } = useFetch(`&i=${id}`);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  if (loading) {
+    return <div className="loading"></div>;
+  }
 
-  return <h2>single movie</h2>;
+  const { Poster: poster, Title: title, Plot: plot, Year: year } = movie;
+
+  return (
+    <section className="single-movie">
+      <img src={poster} alt={title} />
+      <div className="single-movie-info">
+        <h2>{title}</h2>
+        <p>{plot}</p>
+        <h4>{year}</h4>
+        <Link to="/" className="btn">
+          back to movies
+        </Link>
+      </div>
+    </section>
+  );
 };
 
 export default SingleMovie;
